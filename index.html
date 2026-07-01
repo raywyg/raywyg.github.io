@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raywyg Links</title>
+    <title>Raywyg</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/jpeg" href="avatar.jpg">
+    
     <style>
         body {
             background-color: #0d0d0d;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -18,17 +26,20 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background-color: #2a2a2a;
+            object-fit: cover;
             margin-bottom: 20px;
+            border: 1px solid #333;
         }
         .username {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 400;
             margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
         .bio {
             font-size: 14px;
             color: #888;
+            font-weight: 300;
             margin-bottom: 30px;
         }
         .link-btn {
@@ -42,23 +53,25 @@
             margin-bottom: 16px;
             border: 1px solid #333;
             transition: all 0.3s ease;
+            font-weight: 300;
+            letter-spacing: 0.5px;
         }
         .link-btn:hover {
-            background-color: #fff;
-            color: #000;
+            background-color: #ffffff;
+            color: #000000;
             transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
-    <div class="profile-pic"></div>
+    <img src="avatar.jpg" alt="Raywyg" class="profile-pic">
+    
     <div class="username">@raywyg</div>
     <div class="bio">Digital Creator | Projects & Links</div>
 
-    <a href="#" class="link-btn">Telegram</a>
-    <a href="#" class="link-btn">Портфолио</a>
-    <a href="#" class="link-btn">Связь со мной</a>
+    <a href="https://www.instagram.com/raywygxio/" target="_blank" class="link-btn">My ig</a>
+    <a href="https://www.tiktok.com/@raywyg?_r=1&_t=ZN-97g7VsXeEVC" target="_blank" class="link-btn">My tiktok</a>
 
 </body>
 </html>
