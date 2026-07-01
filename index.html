@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/jpeg" href="avatar.jpg">
     
     <style>
@@ -15,7 +15,7 @@
 
         body {
             background-color: #f4f9ff;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -42,17 +42,17 @@
         .glass-card {
             grid-column: 1 / 2; grid-row: 1 / 2;
             align-self: center; justify-self: center;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            background: rgba(185, 220, 255, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            
             border-radius: 24px;
             padding: 30px;
             width: 100%; max-width: 350px;
             display: flex; align-items: center; gap: 20px;
         }
-
         .avatar-wrapper {
             position: relative; width: 80px; height: 80px; flex-shrink: 0;
         }
@@ -67,7 +67,7 @@
         }
 
         .text-info h1 {
-            font-size: 22px; font-weight: 500; color: #111;
+            font-size: 24px; font-weight: 500; color: #111;
             margin-bottom: 4px; letter-spacing: 0.5px;
         }
         
@@ -79,7 +79,7 @@
         }
         
         .role-text {
-            font-size: 14px; color: #555; font-weight: 300;
+            font-size: 15px; color: #555; font-weight: 300;
             position: relative; z-index: 1;
             letter-spacing: 0.5px;
         }
@@ -87,36 +87,37 @@
         .mini-bubble {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 60%);
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 60%);
             box-shadow: 
-                inset 0 0 8px rgba(255, 255, 255, 0.6),
-                0 4px 10px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(2px) saturate(150%) contrast(1.1);
-            -webkit-backdrop-filter: blur(2px) saturate(150%) contrast(1.1);
+                inset 0 0 10px rgba(255, 255, 255, 0.8),
+                0 4px 12px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(5px) brightness(1.1);
+            -webkit-backdrop-filter: blur(5px) brightness(1.1);
             z-index: 2;
             pointer-events: none;
         }
 
         .mb-1 {
-            width: 25px; height: 25px;
-            top: -5px; left: 0;
-            animation: float-lens-1 6s infinite ease-in-out alternate;
+            width: 50px; height: 50px;
+            top: -15px; left: -5px;
+            animation: float-lens-1 7s infinite ease-in-out alternate;
         }
         
         .mb-2 {
-            width: 18px; height: 18px;
-            bottom: -2px; right: 10px;
-            animation: float-lens-2 5s infinite ease-in-out alternate-reverse;
+            width: 35px; height: 35px;
+            bottom: -10px; right: 5px;
+            animation: float-lens-2 6s infinite ease-in-out alternate-reverse;
         }
 
         @keyframes float-lens-1 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 8px) scale(1.15); }
+            100% { transform: translate(60px, 10px) scale(1.1); }
         }
         @keyframes float-lens-2 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-40px, -10px) scale(1.2); }
+            100% { transform: translate(-50px, -15px) scale(1.15); }
         }
+
         .bubble-wrapper-ig { grid-column: 2 / 3; grid-row: 1 / 2; align-self: center; justify-self: center; }
         .bubble-wrapper-tt { grid-column: 1 / 2; grid-row: 2 / 3; align-self: center; justify-self: center; }
 
@@ -132,14 +133,29 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            color: #1a3a5f;
-            font-size: 18px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            
             width: 220px;
             height: 220px;
-            
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+            user-select: none;
+
+        }
+
+        .btn-text {
+            position: relative;
+            z-index: 10;
+            color: #1a3a5f;
+            font-size: 19px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            pointer-events: none; 
+        }
+
+        .soap-bubble::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             filter: url('#fractal-warp');
             
             background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 15%, rgba(173, 216, 230, 0.25) 60%, rgba(255, 192, 203, 0.2) 80%, rgba(173, 216, 230, 0.5) 100%);
@@ -148,22 +164,21 @@
                 inset 0 20px 30px rgba(255, 255, 255, 0.7),
                 inset 10px -10px 20px rgba(173, 216, 230, 0.3),
                 inset -10px 10px 20px rgba(255, 192, 203, 0.3),
-                0 15px 35px rgba(173, 216, 230, 0.2);
-            
-            position: relative;
-            cursor: pointer;
-            
+                0 15px 35px rgba(173, 216, 230, 0.15);
+                
             animation: morph-bubble 8s ease-in-out infinite;
-            transition: transform 0.4s ease;
-            user-select: none;
+            z-index: 1; 
         }
-
         .bubble-wrapper-tt .soap-bubble {
             width: 200px;
             height: 200px;
+        }
+
+        .bubble-wrapper-tt .soap-bubble::before {
             background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 20%, rgba(200, 225, 250, 0.25) 60%, rgba(230, 190, 255, 0.2) 80%, rgba(173, 216, 230, 0.4) 100%);
             animation: morph-bubble-alt 10s ease-in-out infinite;
         }
+
 
         .soap-bubble:hover {
             transform: scale(1.05) translateY(-5px);
@@ -176,22 +191,18 @@
         @keyframes morph-bubble {
             0%, 100% {
                 border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-                transform: translateY(0);
             }
             50% {
                 border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
-                transform: translateY(-15px);
             }
         }
 
         @keyframes morph-bubble-alt {
             0%, 100% {
                 border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-                transform: translateY(0);
             }
             50% {
                 border-radius: 70% 30% 40% 60% / 60% 40% 50% 40%;
-                transform: translateY(15px);
             }
         }
         
@@ -228,11 +239,15 @@
         </div>
 
         <div class="bubble-wrapper-ig">
-            <a href="https://www.instagram.com/raywygxio/" target="_blank" class="soap-bubble">my ig</a>
+            <a href="https://www.instagram.com/raywygxio/" target="_blank" class="soap-bubble">
+                <span class="btn-text">my ig</span>
+            </a>
         </div>
 
         <div class="bubble-wrapper-tt">
-            <a href="https://www.tiktok.com/@raywyg?_r=1&_t=ZN-97g7VsXeEVC" target="_blank" class="soap-bubble">my tiktok</a>
+            <a href="https://www.tiktok.com/@raywyg?_r=1&_t=ZN-97g7VsXeEVC" target="_blank" class="soap-bubble">
+                <span class="btn-text">my tiktok</span>
+            </a>
         </div>
 
     </div>
