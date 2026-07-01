@@ -8,15 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    
     <link rel="icon" type="image/jpeg" href="avatar.jpg">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: #f4f9ff;
@@ -28,10 +23,7 @@
 
         .bg-streams {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
             background: 
                 radial-gradient(circle at 15% 50%, rgba(173, 216, 230, 0.4) 0%, transparent 50%),
@@ -44,17 +36,12 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            width: 100vw;
-            height: 100vh;
-            padding: 5vw;
-            gap: 20px;
+            width: 100vw; height: 100vh;
+            padding: 5vw; gap: 20px;
         }
-
         .glass-card {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-            align-self: center;
-            justify-self: center;
+            grid-column: 1 / 2; grid-row: 1 / 2;
+            align-self: center; justify-self: center;
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -62,175 +49,162 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             border-radius: 24px;
             padding: 30px;
-            width: 100%;
-            max-width: 350px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            width: 100%; max-width: 350px;
+            display: flex; align-items: center; gap: 20px;
         }
 
         .avatar-wrapper {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            flex-shrink: 0;
+            position: relative; width: 80px; height: 80px; flex-shrink: 0;
         }
-
         .profile-pic {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            user-select: none;
-            -webkit-user-drag: none;
+            width: 100%; height: 100%; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.8);
+            user-select: none; -webkit-user-drag: none;
         }
-
         .anti-copy-shield {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%; z-index: 10;
         }
 
         .text-info h1 {
-            font-size: 22px;
-            font-weight: 500;
-            color: #111;
-            margin-bottom: 4px;
+            font-size: 22px; font-weight: 500; color: #111;
+            margin-bottom: 4px; letter-spacing: 0.5px;
+        }
+        
+        .refraction-zone {
+            position: relative;
+            display: inline-block;
+            padding: 5px 10px;
+            margin-left: -10px;
+        }
+        
+        .role-text {
+            font-size: 14px; color: #555; font-weight: 300;
+            position: relative; z-index: 1;
             letter-spacing: 0.5px;
         }
 
-        .text-info p {
-            font-size: 13px;
-            color: #555;
-            font-weight: 300;
-        }
-        .bubble-wrapper-ig {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
-            align-self: center;
-            justify-self: center;
+        .mini-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 60%);
+            box-shadow: 
+                inset 0 0 8px rgba(255, 255, 255, 0.6),
+                0 4px 10px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(2px) saturate(150%) contrast(1.1);
+            -webkit-backdrop-filter: blur(2px) saturate(150%) contrast(1.1);
+            z-index: 2;
+            pointer-events: none;
         }
 
-        .bubble-wrapper-tt {
-            grid-column: 1 / 2;
-            grid-row: 2 / 3;
-            align-self: center;
-            justify-self: center;
+        .mb-1 {
+            width: 25px; height: 25px;
+            top: -5px; left: 0;
+            animation: float-lens-1 6s infinite ease-in-out alternate;
         }
+        
+        .mb-2 {
+            width: 18px; height: 18px;
+            bottom: -2px; right: 10px;
+            animation: float-lens-2 5s infinite ease-in-out alternate-reverse;
+        }
+
+        @keyframes float-lens-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 8px) scale(1.15); }
+        }
+        @keyframes float-lens-2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-40px, -10px) scale(1.2); }
+        }
+        .bubble-wrapper-ig { grid-column: 2 / 3; grid-row: 1 / 2; align-self: center; justify-self: center; }
+        .bubble-wrapper-tt { grid-column: 1 / 2; grid-row: 2 / 3; align-self: center; justify-self: center; }
+
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
-                height: auto;
-                min-height: 100vh;
-                padding-top: 10vh;
-            }
-            .glass-card {
-                grid-column: 1; grid-row: 1;
-            }
-            .bubble-wrapper-ig {
-                grid-column: 1; grid-row: 2;
-                margin-top: 40px;
-            }
-            .bubble-wrapper-tt {
-                grid-column: 1; grid-row: 3;
-                margin-top: 20px;
-            }
+            .container { grid-template-columns: 1fr; grid-template-rows: auto auto auto; height: auto; min-height: 100vh; padding-top: 10vh; }
+            .glass-card { grid-column: 1; grid-row: 1; }
+            .bubble-wrapper-ig { grid-column: 1; grid-row: 2; margin-top: 40px; }
+            .bubble-wrapper-tt { grid-column: 1; grid-row: 3; margin-top: 20px; }
         }
 
-       .soap-bubble {
+.soap-bubble {
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            color: #1a3a5f; 
+            color: #1a3a5f;
             font-size: 18px;
-            font-weight: 400;
+            font-weight: 500;
             letter-spacing: 0.5px;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 20%, rgba(173, 216, 230, 0.15) 60%, rgba(255, 192, 203, 0.15) 80%, rgba(173, 216, 230, 0.4) 100%);
+            
+            width: 220px;
+            height: 220px;
+            
+            filter: url('#fractal-warp');
+            
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 15%, rgba(173, 216, 230, 0.25) 60%, rgba(255, 192, 203, 0.2) 80%, rgba(173, 216, 230, 0.5) 100%);
             
             box-shadow: 
                 inset 0 20px 30px rgba(255, 255, 255, 0.7),
                 inset 10px -10px 20px rgba(173, 216, 230, 0.3),
                 inset -10px 10px 20px rgba(255, 192, 203, 0.3),
                 0 15px 35px rgba(173, 216, 230, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            
             position: relative;
             cursor: pointer;
-            animation: 
-                bubble-float 6s ease-in-out infinite,
-                bubble-wobble 4s ease-in-out infinite;
-                
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
+            
+            animation: morph-bubble 8s ease-in-out infinite;
+            transition: transform 0.4s ease;
             user-select: none;
         }
 
-        .soap-bubble::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 35px;
-            width: 45px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            transform: rotate(-15px);
-            filter: blur(1px);
-        }
-
         .bubble-wrapper-tt .soap-bubble {
-            animation-delay: -2.5s;
-            width: 170px; 
-            height: 170px;
-            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 20%, rgba(200, 225, 250, 0.2) 60%, rgba(230, 190, 255, 0.15) 80%, rgba(173, 216, 230, 0.4) 100%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 20%, rgba(200, 225, 250, 0.25) 60%, rgba(230, 190, 255, 0.2) 80%, rgba(173, 216, 230, 0.4) 100%);
+            animation: morph-bubble-alt 10s ease-in-out infinite;
         }
 
         .soap-bubble:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: 
-                inset 0 20px 40px rgba(255, 255, 255, 0.9),
-                inset 15px -15px 30px rgba(173, 216, 230, 0.4),
-                0 20px 40px rgba(173, 216, 230, 0.35);
+            transform: scale(1.05) translateY(-5px);
         }
 
         .soap-bubble:active {
             transform: scale(0.95);
         }
 
-        @keyframes bubble-float {
+        @keyframes morph-bubble {
             0%, 100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
                 transform: translateY(0);
             }
             50% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
                 transform: translateY(-15px);
             }
         }
 
-        @keyframes bubble-wobble {
+        @keyframes morph-bubble-alt {
             0%, 100% {
-                border-radius: 50% 50% 50% 50%;
-            }
-            25% {
-                border-radius: 48% 52% 49% 51%;
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+                transform: translateY(0);
             }
             50% {
-                border-radius: 52% 48% 51% 49%;
-            }
-            75% {
-                border-radius: 49% 51% 52% 48%;
+                border-radius: 70% 30% 40% 60% / 60% 40% 50% 40%;
+                transform: translateY(15px);
             }
         }
+        
     </style>
 </head>
 <body>
+
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+        <filter id="fractal-warp">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
 
     <div class="bg-streams"></div>
 
@@ -243,7 +217,13 @@
             </div>
             <div class="text-info">
                 <h1>@raywyg</h1>
-                <p>Digital Creator</p>
+                
+                <div class="refraction-zone">
+                    <p class="role-text">graphic designer</p>
+                    <div class="mini-bubble mb-1"></div>
+                    <div class="mini-bubble mb-2"></div>
+                </div>
+
             </div>
         </div>
 
