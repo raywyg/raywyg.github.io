@@ -42,7 +42,6 @@
             width: 100vw; height: 100vh;
             padding: 5vw; gap: 20px;
         }
-
         .glass-card {
             grid-column: 1 / 2; grid-row: 1 / 2;
             align-self: center; justify-self: center;
@@ -69,6 +68,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             border-radius: 50%; z-index: 10;
         }
+
         .text-info h1 {
             font-size: 24px; font-weight: 500; color: #111;
             margin-bottom: 4px; letter-spacing: 0.5px;
@@ -96,6 +96,7 @@
 
         .bubble-wrapper-ig { grid-column: 2 / 3; grid-row: 1 / 2; align-self: center; justify-self: center; }
         .bubble-wrapper-tt { grid-column: 1 / 2; grid-row: 2 / 3; align-self: center; justify-self: center; }
+
         .copyright-mark {
             position: fixed;
             bottom: 20px;
@@ -115,12 +116,7 @@
             .glass-card { grid-column: 1; grid-row: 1; }
             .bubble-wrapper-ig { grid-column: 1; grid-row: 2; margin-top: 40px; }
             .bubble-wrapper-tt { grid-column: 1; grid-row: 3; margin-top: 20px; }
-            .copyright-mark {
-                position: absolute;
-                bottom: 20px;
-                right: 0; left: 0;
-                text-align: center;
-            }
+            .copyright-mark { position: absolute; bottom: 20px; right: 0; left: 0; text-align: center; }
         }
 
 .soap-bubble {
@@ -136,6 +132,7 @@
             user-select: none;
         }
 
+        /* Текст на самом верху */
         .btn-text {
             position: relative;
             z-index: 10; 
@@ -146,13 +143,12 @@
             pointer-events: none;
             transition: transform 0.3s ease;
         }
-
         .bg-logo {
             position: absolute;
             font-size: 110px; 
-            color: rgba(26, 58, 95, 0.06); 
-            z-index: 0; 
-            filter: blur(2px); 
+            color: rgba(26, 58, 95, 0.15); 
+            z-index: 2; 
+            filter: blur(1.5px); 
             transform: scale(1);
             transition: all 0.5s ease;
             pointer-events: none;
@@ -173,7 +169,7 @@
                 0 15px 35px rgba(173, 216, 230, 0.15);
                 
             animation: morph-bubble 8s ease-in-out infinite;
-            z-index: 1;
+            z-index: 1; 
         }
 
         .bubble-wrapper-tt .soap-bubble {
@@ -186,29 +182,20 @@
             animation: morph-bubble-alt 10s ease-in-out infinite;
         }
 
-        .soap-bubble:hover {
-            transform: scale(1.05) translateY(-5px);
-        }
-
+        /* Интерактив */
+        .soap-bubble:hover { transform: scale(1.05) translateY(-5px); }
         .soap-bubble:hover .bg-logo {
             transform: scale(1.2) rotate(-15deg);
-            color: rgba(26, 58, 95, 0.12); 
-            filter: blur(4px); 
+            color: rgba(26, 58, 95, 0.25); 
+            filter: blur(3px); 
         }
-
-        .soap-bubble:hover .btn-text {
-            transform: scale(1.05);
-        }
-
-        .soap-bubble:active {
-            transform: scale(0.95);
-        }
+        .soap-bubble:hover .btn-text { transform: scale(1.05); }
+        .soap-bubble:active { transform: scale(0.95); }
 
         @keyframes morph-bubble {
             0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
             50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
         }
-
         @keyframes morph-bubble-alt {
             0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
             50% { border-radius: 70% 30% 40% 60% / 60% 40% 50% 40%; }
@@ -216,9 +203,7 @@
         
     </style>
 </head>
-<body>
-
-    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+<svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
         <filter id="fractal-warp">
             <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" />
@@ -259,6 +244,7 @@
         </div>
 
     </div>
+
     <div class="copyright-mark">
         &copy; 2026 RAYWYG. All rights reserved.
     </div>
