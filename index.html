@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raywyg | Links</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="icon" type="image/jpeg" href="avatar.jpg">
-    
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -42,6 +39,7 @@
             width: 100vw; height: 100vh;
             padding: 5vw; gap: 20px;
         }
+
         .glass-card {
             grid-column: 1 / 2; grid-row: 1 / 2;
             align-self: center; justify-self: center;
@@ -98,17 +96,9 @@
         .bubble-wrapper-tt { grid-column: 1 / 2; grid-row: 2 / 3; align-self: center; justify-self: center; }
 
         .copyright-mark {
-            position: fixed;
-            bottom: 20px;
-            right: 30px;
-            font-size: 11px;
-            color: #888;
-            font-weight: 300;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            user-select: none;
-            pointer-events: none;
-            z-index: 100;
+            position: fixed; bottom: 20px; right: 30px; font-size: 11px;
+            color: #888; font-weight: 300; letter-spacing: 1.5px;
+            text-transform: uppercase; user-select: none; pointer-events: none; z-index: 100;
         }
 
         @media (max-width: 768px) {
@@ -132,7 +122,6 @@
             user-select: none;
         }
 
-        /* Текст на самом верху */
         .btn-text {
             position: relative;
             z-index: 10; 
@@ -143,13 +132,18 @@
             pointer-events: none;
             transition: transform 0.3s ease;
         }
-        .bg-logo {
+
+        .bg-logo-img {
             position: absolute;
-            font-size: 110px; 
-            color: rgba(26, 58, 95, 0.15); 
-            z-index: 2; 
-            filter: blur(1.5px); 
-            transform: scale(1);
+            top: 50%;
+            left: 50%;
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            z-index: 2;
+            filter: blur(1.5px);
+            opacity: 0.35; 
+            transform: translate(-50%, -50%) scale(1);
             transition: all 0.5s ease;
             pointer-events: none;
         }
@@ -169,7 +163,7 @@
                 0 15px 35px rgba(173, 216, 230, 0.15);
                 
             animation: morph-bubble 8s ease-in-out infinite;
-            z-index: 1; 
+            z-index: 1;
         }
 
         .bubble-wrapper-tt .soap-bubble {
@@ -184,9 +178,9 @@
 
         /* Интерактив */
         .soap-bubble:hover { transform: scale(1.05) translateY(-5px); }
-        .soap-bubble:hover .bg-logo {
-            transform: scale(1.2) rotate(-15deg);
-            color: rgba(26, 58, 95, 0.25); 
+        .soap-bubble:hover .bg-logo-img {
+            transform: translate(-50%, -50%) scale(1.15) rotate(-10deg);
+            opacity: 0.6; 
             filter: blur(3px); 
         }
         .soap-bubble:hover .btn-text { transform: scale(1.05); }
@@ -200,10 +194,11 @@
             0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
             50% { border-radius: 70% 30% 40% 60% / 60% 40% 50% 40%; }
         }
-        
     </style>
 </head>
-<svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+<body>
+
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
         <filter id="fractal-warp">
             <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" />
@@ -231,14 +226,14 @@
 
         <div class="bubble-wrapper-ig">
             <a href="https://www.instagram.com/raywygxio/" target="_blank" class="soap-bubble">
-                <i class="fa-brands fa-instagram bg-logo"></i>
+                <img src="ig.png" alt="ig" class="bg-logo-img">
                 <span class="btn-text">my ig</span>
             </a>
         </div>
 
         <div class="bubble-wrapper-tt">
             <a href="https://www.tiktok.com/@raywyg?_r=1&_t=ZN-97g7VsXeEVC" target="_blank" class="soap-bubble">
-                <i class="fa-brands fa-tiktok bg-logo"></i>
+                <img src="ttk.png" alt="tiktok" class="bg-logo-img">
                 <span class="btn-text">my tiktok</span>
             </a>
         </div>
