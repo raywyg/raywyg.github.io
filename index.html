@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Жесткая блокировка зума и масштабирования на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Raywyg | Links & Works</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,14 +12,23 @@
     <link rel="icon" type="image/jpeg" href="avatar.jpg">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        body {
+        html, body {
             background-color: #f4f9ff;
             font-family: 'Outfit', sans-serif;
+            width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            /* Запрещаем браузеру делать pull-to-refresh и горизонтальные свайпы страницы */
+            overscroll-behavior-x: none;
+            touch-action: pan-y;
         }
 
         .bg-streams {
@@ -31,9 +41,10 @@
                 radial-gradient(circle at 50% 85%, rgba(225, 200, 250, 0.35) 0%, transparent 45%);
             opacity: 0.85;
             filter: blur(40px);
+            transform: translateZ(0);
         }
 
-        /* --- ПАРАЛЛАКС ПУЗЫРЬКИ ПО КРАЯМ (OpenAI style interactive depth) --- */
+        /* --- ФОНОВЫЕ ПУЗЫРЬКИ НА ОРБИТАХ (Astra Physics) --- */
         .ambient-bubbles-layer {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -45,28 +56,32 @@
         .edge-bubble {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.1) 25%, rgba(173, 216, 230, 0.3) 65%, rgba(255, 192, 203, 0.25) 85%, rgba(173, 216, 230, 0.5) 100%);
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.15) 25%, rgba(173, 216, 230, 0.35) 65%, rgba(255, 192, 203, 0.3) 85%, rgba(173, 216, 230, 0.55) 100%);
             box-shadow: 
-                inset 0 10px 20px rgba(255, 255, 255, 0.8),
+                inset 0 10px 20px rgba(255, 255, 255, 0.85),
                 inset 5px -5px 15px rgba(173, 216, 230, 0.4),
-                0 10px 25px rgba(31, 38, 135, 0.05);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+                0 8px 20px rgba(31, 38, 135, 0.04);
             will-change: transform;
+            transform: translate3d(0, 0, 0);
         }
-        .eb-1 { width: 130px; height: 130px; top: 6%; left: 3%; opacity: 0.75; }
-        .eb-2 { width: 85px; height: 85px; top: 12%; right: 4%; opacity: 0.65; }
-        .eb-3 { width: 160px; height: 160px; bottom: 8%; left: -30px; opacity: 0.6; }
-        .eb-4 { width: 110px; height: 110px; bottom: 12%; right: 3%; opacity: 0.75; }
-        .eb-5 { width: 55px; height: 55px; top: 48%; left: 6%; opacity: 0.5; }
-        .eb-6 { width: 70px; height: 70px; top: 42%; right: 7%; opacity: 0.55; }
+        /* Расположение фоновых пузырей по краям и вокруг контента */
+        .eb-1 { width: 135px; height: 135px; top: 6%; left: 3%; opacity: 0.8; }
+        .eb-2 { width: 90px; height: 90px; top: 10%; right: 4%; opacity: 0.7; }
+        .eb-3 { width: 160px; height: 160px; bottom: 8%; left: -20px; opacity: 0.65; }
+        .eb-4 { width: 115px; height: 115px; bottom: 12%; right: 3%; opacity: 0.75; }
+        .eb-5 { width: 65px; height: 65px; top: 46%; left: 5%; opacity: 0.6; }
+        .eb-6 { width: 75px; height: 75px; top: 42%; right: 6%; opacity: 0.65; }
+        .eb-7 { width: 50px; height: 50px; top: 22%; left: 44%; opacity: 0.5; }
+        .eb-8 { width: 60px; height: 60px; bottom: 32%; right: 18%; opacity: 0.55; }
 
-        /* --- ОБНОВЛЕННАЯ СЕТКА (Верх: Карточка + 2 пузыря соцсетей, Низ: Колесо видео) --- */
+        /* --- ОСНОВНАЯ СЕТКА --- */
         .container {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
             grid-template-rows: auto 1fr;
-            width: 100vw;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
             min-height: 100vh;
             padding: 3vh 5vw 5vh 5vw;
             gap: 25px;
@@ -74,19 +89,21 @@
             z-index: 2;
         }
 
+        /* Карточка жестко зафиксирована (не улетает от мыши) */
         .glass-card {
             grid-column: 1 / 2; grid-row: 1 / 2;
             align-self: center; justify-self: center;
-            background: rgba(185, 220, 255, 0.25);
+            background: rgba(185, 220, 255, 0.28);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.75);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
             border-radius: 24px;
             padding: 26px 30px;
             width: 100%; max-width: 370px;
             display: flex; align-items: center; gap: 20px;
-            will-change: transform;
+            position: relative;
+            z-index: 5;
         }
 
         .avatar-wrapper {
@@ -142,10 +159,10 @@
         .mb-1 { width: 50px; height: 50px; top: -15px; left: -5px; animation: float-lens-1 7s infinite ease-in-out alternate; }
         .mb-2 { width: 35px; height: 35px; bottom: -10px; right: 5px; animation: float-lens-2 6s infinite ease-in-out alternate-reverse; }
 
-        @keyframes float-lens-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 10px) scale(1.1); } }
-        @keyframes float-lens-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-50px, -15px) scale(1.15); } }
+        @keyframes float-lens-1 { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(60px, 10px, 0) scale(1.1); } }
+        @keyframes float-lens-2 { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(-50px, -15px, 0) scale(1.15); } }
 
-        /* --- ВЕРХНИЙ БЛОК ДЛЯ ДВУХ ПУЗЫРЕЙ СОЦСЕТЕЙ --- */
+        /* --- ВЕРХНИЙ БЛОК ДВУХ ПУЗЫРЕЙ СОЦСЕТЕЙ (Тоже реагируют на физику орбит) --- */
         .top-bubbles-group {
             grid-column: 2 / 3;
             grid-row: 1 / 2;
@@ -158,6 +175,7 @@
 
         .bubble-wrapper-ig, .bubble-wrapper-tt {
             will-change: transform;
+            transform: translate3d(0, 0, 0);
         }
 
         .soap-bubble {
@@ -169,7 +187,7 @@
             height: 220px;
             position: relative;
             cursor: pointer;
-            transition: transform 0.4s ease;
+            transition: transform 0.35s ease;
             user-select: none;
         }
 
@@ -253,6 +271,7 @@
             width: 100%;
             position: relative;
             padding-top: 10px;
+            z-index: 5;
         }
 
         .wheel-header {
@@ -262,10 +281,10 @@
             margin-bottom: 18px;
             padding: 8px 20px;
             border-radius: 30px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
             box-shadow: 0 4px 20px rgba(31, 38, 135, 0.04);
         }
 
@@ -289,6 +308,7 @@
             user-select: none;
             touch-action: pan-y;
             cursor: grab;
+            overflow: visible;
         }
         .wheel-viewport:active {
             cursor: grabbing;
@@ -303,17 +323,18 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            /* Apple Liquid Glass эффект */
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.25) 100%);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.32) 100%);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
             border: 1.5px solid rgba(255, 255, 255, 0.85);
             box-shadow: 
                 0 20px 45px rgba(26, 58, 95, 0.1),
                 inset 0 2px 4px rgba(255, 255, 255, 0.95),
                 inset 0 -10px 20px rgba(185, 220, 255, 0.3);
             transform-style: preserve-3d;
-            will-change: transform, opacity, filter;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -333,6 +354,7 @@
             position: relative;
             background: rgba(15, 23, 42, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.6);
+            transform: translateZ(0);
         }
 
         .work-video {
@@ -349,8 +371,7 @@
             right: 10px;
             padding: 4px 10px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.85);
             font-size: 11px;
             font-weight: 500;
             color: #1a3a5f;
@@ -389,15 +410,13 @@
         }
 
         .glass-nav-btn {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: 1px solid rgba(255, 255, 255, 0.85);
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.55);
             color: #1a3a5f;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -406,7 +425,7 @@
             box-shadow: 0 4px 15px rgba(31, 38, 135, 0.05);
         }
         .glass-nav-btn:hover {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             transform: scale(1.08);
         }
         .glass-nav-btn:active {
@@ -419,30 +438,62 @@
             text-transform: uppercase; user-select: none; pointer-events: none; z-index: 100;
         }
 
+        /* --- ОПТИМИЗАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА (БЕЗ ЛАГОВ И БАГОВ МАСШТАБА) --- */
         @media (max-width: 860px) {
             .container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto auto;
                 height: auto;
-                padding-top: 5vh;
-                padding-bottom: 80px;
-                gap: 35px;
+                padding: 4vh 4vw 70px 4vw;
+                gap: 28px;
+                overflow-x: hidden;
             }
-            .glass-card { grid-column: 1; grid-row: 1; }
-            .top-bubbles-group { grid-column: 1; grid-row: 2; gap: 20px; }
-            .works-wheel-section { grid-column: 1; grid-row: 3; }
-            .soap-bubble { width: 170px; height: 170px; }
-            .bubble-wrapper-tt .soap-bubble { width: 160px; height: 160px; }
-            .wheel-viewport { height: 360px; }
-            .liquid-card { width: 225px; height: 335px; }
-            .video-container { height: 260px; }
-            .copyright-mark { position: absolute; bottom: 20px; right: 0; left: 0; text-align: center; }
+            .glass-card { 
+                grid-column: 1; 
+                grid-row: 1; 
+                padding: 20px 22px;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            .top-bubbles-group { 
+                grid-column: 1; 
+                grid-row: 2; 
+                gap: 18px; 
+            }
+            .works-wheel-section { 
+                grid-column: 1; 
+                grid-row: 3; 
+                overflow: hidden;
+                padding-bottom: 10px;
+            }
+            .soap-bubble { width: 155px; height: 155px; }
+            .bubble-wrapper-tt .soap-bubble { width: 145px; height: 145px; }
+            
+            /* Отключаем тяжелый SVG-фильтр на телефонах для 60 FPS */
+            .soap-bubble::before {
+                filter: none !important;
+            }
+            .bg-streams {
+                filter: blur(25px);
+            }
+            /* Облегчаем стеклянные карточки для мобильного GPU */
+            .liquid-card {
+                width: 220px;
+                height: 325px;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(235, 245, 255, 0.78) 100%);
+            }
+            .wheel-viewport { height: 345px; perspective: 1000px; }
+            .video-container { height: 250px; }
+            .eb-7, .eb-8 { display: none; }
+            .copyright-mark { position: absolute; bottom: 18px; right: 0; left: 0; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
         <filter id="fractal-warp">
             <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" />
@@ -451,20 +502,22 @@
 
     <div class="bg-streams"></div>
 
-    <!-- СЛОЙ МЫЛЬНЫХ ПУЗЫРЬКОВ ПО КРАЯМ (двигаются от мышки как объекты на сайте OpenAI) -->
+    <!-- ФОНОВЫЕ ПУЗЫРИ (Выбиваются с орбиты мышкой и возвращаются обратно) -->
     <div class="ambient-bubbles-layer">
-        <div class="edge-bubble eb-1" data-depth="0.06"></div>
-        <div class="edge-bubble eb-2" data-depth="-0.05"></div>
-        <div class="edge-bubble eb-3" data-depth="0.08"></div>
-        <div class="edge-bubble eb-4" data-depth="-0.07"></div>
-        <div class="edge-bubble eb-5" data-depth="0.04"></div>
-        <div class="edge-bubble eb-6" data-depth="-0.04"></div>
+        <div class="edge-bubble eb-1" data-orbit-bubble data-radius="260" data-force="1.4"></div>
+        <div class="edge-bubble eb-2" data-orbit-bubble data-radius="240" data-force="1.5"></div>
+        <div class="edge-bubble eb-3" data-orbit-bubble data-radius="280" data-force="1.2"></div>
+        <div class="edge-bubble eb-4" data-orbit-bubble data-radius="260" data-force="1.4"></div>
+        <div class="edge-bubble eb-5" data-orbit-bubble data-radius="220" data-force="1.7"></div>
+        <div class="edge-bubble eb-6" data-orbit-bubble data-radius="220" data-force="1.6"></div>
+        <div class="edge-bubble eb-7" data-orbit-bubble data-radius="200" data-force="1.8"></div>
+        <div class="edge-bubble eb-8" data-orbit-bubble data-radius="210" data-force="1.7"></div>
     </div>
 
     <div class="container">
         
-        <!-- ТВОЯ КАРТОЧКА (СЛЕВА СВЕРХУ) -->
-        <div class="glass-card" data-depth="0.015">
+        <!-- КАРТОЧКА ПРОФИЛЯ (СТРОГО СТАТИЧНА, НЕ ТРОГАЕМ ФИЗИКОЙ) -->
+        <div class="glass-card">
             <div class="avatar-wrapper">
                 <div class="anti-copy-shield" oncontextmenu="return false;"></div>
                 <img src="avatar.jpg" alt="Raywyg" class="profile-pic" draggable="false">
@@ -481,16 +534,16 @@
             </div>
         </div>
 
-        <!-- ДВА ПУЗЫРЬКА СОЦСЕТЕЙ (СПРАВА СВЕРХУ, В СВОИХ РАЗМЕРАХ) -->
+        <!-- ДВА ПУЗЫРЬКА СОЦСЕТЕЙ (Тоже выбиваются с орбиты при резком движении мыши и плывут назад) -->
         <div class="top-bubbles-group">
-            <div class="bubble-wrapper-ig" data-depth="-0.035">
+            <div class="bubble-wrapper-ig" data-orbit-bubble data-radius="210" data-force="0.85">
                 <a href="https://www.instagram.com/raywygxio/" target="_blank" class="soap-bubble">
                     <img src="ig.png" alt="ig" class="bg-logo-img">
                     <span class="btn-text">my ig</span>
                 </a>
             </div>
 
-            <div class="bubble-wrapper-tt" data-depth="0.045">
+            <div class="bubble-wrapper-tt" data-orbit-bubble data-radius="210" data-force="0.95">
                 <a href="https://www.tiktok.com/@raywyg?_r=1&_t=ZN-97g7VsXeEVC" target="_blank" class="soap-bubble">
                     <img src="ttk.png" alt="tiktok" class="bg-logo-img">
                     <span class="btn-text">my tiktok</span>
@@ -498,16 +551,16 @@
             </div>
         </div>
 
-        <!-- НИЖНИЙ БЛОК: APPLE LIQUID GLASS КОЛЕСО ТВОИХ ВИДЕОРАБОТ -->
+        <!-- КОЛЕСО ВИДЕОРАБОТ (СТРОГО НА МЕСТЕ, КРУТИТСЯ ПЛАВНО) -->
         <div class="works-wheel-section">
             <div class="wheel-header">
-                <span>Selected Works • Крути колесо или тяни</span>
+                <span>Selected Works • Крути колесо или свайпай</span>
             </div>
 
             <div class="wheel-viewport" id="wheelViewport">
                 
                 <!-- ================= РАБОТА 1 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В АТРИБУТ src="" НИЖЕ (например: src="stuck.mp4") -->
+                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
                 <div class="liquid-card">
                     <div class="video-container">
                         <video class="work-video" src="video1.mp4" loop muted playsinline preload="metadata"></video>
@@ -519,7 +572,7 @@
                 </div>
 
                 <!-- ================= РАБОТА 2 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В АТРИБУТ src="" НИЖЕ -->
+                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
                 <div class="liquid-card">
                     <div class="video-container">
                         <video class="work-video" src="video2.mp4" loop muted playsinline preload="metadata"></video>
@@ -531,7 +584,7 @@
                 </div>
 
                 <!-- ================= РАБОТА 3 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В АТРИБУТ src="" НИЖЕ -->
+                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
                 <div class="liquid-card">
                     <div class="video-container">
                         <video class="work-video" src="video3.mp4" loop muted playsinline preload="metadata"></video>
@@ -543,7 +596,7 @@
                 </div>
 
                 <!-- ================= РАБОТА 4 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В АТРИБУТ src="" НИЖЕ -->
+                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
                 <div class="liquid-card">
                     <div class="video-container">
                         <video class="work-video" src="video4.mp4" loop muted playsinline preload="metadata"></video>
@@ -555,7 +608,7 @@
                 </div>
 
                 <!-- ================= РАБОТА 5 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В АТРИБУТ src="" НИЖЕ -->
+                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
                 <div class="liquid-card">
                     <div class="video-container">
                         <video class="work-video" src="video5.mp4" loop muted playsinline preload="metadata"></video>
@@ -581,49 +634,130 @@
     </div>
 
     <script>
+        // Блокируем жест масштабирования (pinch-to-zoom и двойной тап) на мобильных браузерах (iOS Safari и др.)
+        document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+
+        const isMobileDevice = window.matchMedia('(max-width: 860px)').matches;
+
         // =========================================================================
-        // 1. ПЛАВНЫЙ ПАРАЛЛАКС ПУЗЫРЬКОВ ОТ ДВИЖЕНИЯ МЫШИ (В СТИЛЕ САЙТА OPENAI)
+        // 1. ФИЗИКА ВЫБИВАНИЯ С ОРБИТЫ И ВОЗВРАТА (В СТИЛЕ GPT-6 ASTRA)
         // =========================================================================
-        const parallaxItems = document.querySelectorAll('[data-depth]');
-        let targetMouseX = 0, targetMouseY = 0;
-        let currentMouseX = 0, currentMouseY = 0;
+        const orbitNodes = Array.from(document.querySelectorAll('[data-orbit-bubble]')).map(el => ({
+            el,
+            x: 0,          // Текущее смещение X от родной орбиты
+            y: 0,          // Текущее смещение Y от родной орбиты
+            vx: 0,         // Скорость X
+            vy: 0,         // Скорость Y
+            baseX: 0,      // Координата центра орбиты на экране
+            baseY: 0,
+            radius: parseFloat(el.dataset.radius) || 240,
+            force: parseFloat(el.dataset.force) || 1.2
+        }));
 
-        window.addEventListener('mousemove', (e) => {
-            // Считаем отклонение курсора от центра экрана
-            targetMouseX = e.clientX - window.innerWidth / 2;
-            targetMouseY = e.clientY - window.innerHeight / 2;
-        });
+        // Вычисляем родные позиции (орбиты) каждого пузыря
+        function updateBaseOrbits() {
+            orbitNodes.forEach(b => {
+                const rect = b.el.getBoundingClientRect();
+                b.baseX = (rect.left + rect.width / 2) - b.x;
+                b.baseY = (rect.top + rect.height / 2) - b.y;
+            });
+        }
 
-        function updateParallax() {
-            // Плавное сглаживание (lerp) для эффекта невесомости в жидкости
-            currentMouseX += (targetMouseX - currentMouseX) * 0.06;
-            currentMouseY += (targetMouseY - currentMouseY) * 0.06;
+        window.addEventListener('load', updateBaseOrbits);
+        window.addEventListener('resize', updateBaseOrbits);
+        setTimeout(updateBaseOrbits, 100);
 
-            parallaxItems.forEach(el => {
-                const depth = parseFloat(el.getAttribute('data-depth')) || 0.03;
-                const moveX = currentMouseX * depth;
-                const moveY = currentMouseY * depth;
-                el.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        const pointer = { x: -9999, y: -9999, vx: 0, vy: 0, lastX: -9999, lastY: -9999, active: false };
+        let pointerIdleTimer;
+
+        function handleInputMove(clientX, clientY) {
+            if (pointer.lastX !== -9999) {
+                pointer.vx = clientX - pointer.lastX;
+                pointer.vy = clientY - pointer.lastY;
+            }
+            pointer.x = clientX;
+            pointer.y = clientY;
+            pointer.lastX = clientX;
+            pointer.lastY = clientY;
+            pointer.active = true;
+
+            clearTimeout(pointerIdleTimer);
+            pointerIdleTimer = setTimeout(() => {
+                pointer.active = false;
+                pointer.vx = 0;
+                pointer.vy = 0;
+            }, 90);
+        }
+
+        window.addEventListener('mousemove', (e) => handleInputMove(e.clientX, e.clientY), { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                handleInputMove(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        function stepOrbitPhysics() {
+            const pointerSpeed = Math.hypot(pointer.vx, pointer.vy);
+
+            orbitNodes.forEach(b => {
+                // Текущая позиция пузыря в пространстве
+                const currentScreenX = b.baseX + b.x;
+                const currentScreenY = b.baseY + b.y;
+
+                const dx = currentScreenX - pointer.x;
+                const dy = currentScreenY - pointer.y;
+                const dist = Math.hypot(dx, dy);
+
+                // Если курсор рядом — выбиваем пузырь с его орбиты
+                if (dist < b.radius && dist > 0.001) {
+                    const factor = Math.pow(1 - dist / b.radius, 1.5);
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+
+                    // Чем быстрее двигаешь мышкой, тем сильнее разлетаются пузыри (можно расчистить зону)
+                    const impulse = (pointer.active ? (2.2 + Math.min(pointerSpeed * 0.28, 12)) : 0.6) * factor * b.force;
+                    
+                    b.vx += nx * impulse + (pointer.vx * 0.06 * factor * b.force);
+                    b.vy += ny * impulse + (pointer.vy * 0.06 * factor * b.force);
+                }
+
+                // Мягкая гравитация орбиты: когда мышь не трогает пузырь, он плавно плывет обратно на (0, 0)
+                const springStiffness = 0.018;
+                b.vx += -b.x * springStiffness;
+                b.vy += -b.y * springStiffness;
+
+                // Сопротивление среды (жидкое затухание)
+                b.vx *= 0.91;
+                b.vy *= 0.91;
+
+                b.x += b.vx;
+                b.y += b.vy;
+
+                b.el.style.transform = `translate3d(${b.x.toFixed(2)}px, ${b.y.toFixed(2)}px, 0)`;
             });
 
-            requestAnimationFrame(updateParallax);
+            pointer.vx *= 0.8;
+            pointer.vy *= 0.8;
+
+            requestAnimationFrame(stepOrbitPhysics);
         }
-        updateParallax();
+        stepOrbitPhysics();
 
         // =========================================================================
-        // 2. APPLE LIQUID GLASS 3D-КОЛЕСО С ИНЕРЦИЕЙ
+        // 2. ОПТИМИЗИРОВАННОЕ APPLE LIQUID GLASS 3D-КОЛЕСО (60 FPS НА ТЕЛЕФОНЕ И ПК)
         // =========================================================================
         const viewport = document.getElementById('wheelViewport');
         const cards = Array.from(document.querySelectorAll('.liquid-card'));
         const totalCards = cards.length;
 
-        let targetIndex = 0;   // Куда стремится колесо
-        let currentIndex = 0;  // Текущая сглаженная позиция
+        let targetIndex = 0;
+        let currentIndex = 0;
         let isDragging = false;
         let startX = 0;
         let dragStartIndex = 0;
 
-        // Кратчайшее расстояние по кругу для бесконечного вращения колеса
         function getCircularOffset(index, center, total) {
             let diff = (index - center) % total;
             if (diff < -total / 2) diff += total;
@@ -632,31 +766,34 @@
         }
 
         function renderWheel() {
-            // Мягкая пружинная доводка в стиле iOS / macOS
             if (!isDragging) {
-                currentIndex += (targetIndex - currentIndex) * 0.085;
+                currentIndex += (targetIndex - currentIndex) * 0.09;
             }
+
+            const mobileView = window.innerWidth < 860;
+            const spacing = mobileView ? 140 : 220;
 
             cards.forEach((card, i) => {
                 const offset = getCircularOffset(i, currentIndex, totalCards);
                 const absOffset = Math.abs(offset);
 
-                // Геометрия 3D-колеса
-                const spacing = window.innerWidth < 860 ? 155 : 220;
                 const translateX = offset * spacing;
-                const translateZ = -absOffset * 130;
-                const rotateY = offset * -24; // Поворот граней к центру
-                const scale = Math.max(0.65, 1 - absOffset * 0.14);
-                const opacity = Math.max(0.15, 1 - absOffset * 0.35);
-                const blur = Math.max(0, (absOffset - 0.3) * 3.5);
+                const translateZ = -absOffset * (mobileView ? 95 : 130);
+                const rotateY = offset * (mobileView ? -18 : -24);
+                const scale = Math.max(0.68, 1 - absOffset * 0.14);
+                const opacity = Math.max(0.18, 1 - absOffset * 0.36);
 
-                card.style.transform = `translate3d(${translateX}px, 0, ${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+                card.style.transform = `translate3d(${translateX.toFixed(1)}px, 0, ${translateZ.toFixed(1)}px) rotateY(${rotateY.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
                 card.style.zIndex = Math.round(100 - absOffset * 20);
-                card.style.opacity = opacity;
-                card.style.filter = `blur(${blur}px)`;
+                card.style.opacity = opacity.toFixed(2);
+
+                // На ПК оставляем кинематографичный блюр боковых карточек, на мобилках отключаем ради плавности
+                if (!mobileView) {
+                    const blur = Math.max(0, (absOffset - 0.3) * 3);
+                    card.style.filter = blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none';
+                }
 
                 const video = card.querySelector('video');
-                // Активна та карточка, которая сейчас ближе всего к центру
                 if (absOffset < 0.45) {
                     if (!card.classList.contains('is-active')) {
                         card.classList.add('is-active');
@@ -679,7 +816,7 @@
         }
         renderWheel();
 
-        // Прокрутка колесиком мыши / тачпадом
+        // Скролл колесиком мыши / тачпадом
         let wheelTimeout;
         viewport.addEventListener('wheel', (e) => {
             e.preventDefault();
@@ -687,13 +824,12 @@
             targetIndex += delta * 0.0025;
 
             clearTimeout(wheelTimeout);
-            // Мягкая фиксация (snap) на ближайшей карточке после остановки скролла
             wheelTimeout = setTimeout(() => {
                 targetIndex = Math.round(targetIndex);
             }, 140);
         }, { passive: false });
 
-        // Перетаскивание мышью и свайпы пальцем
+        // Свайпы пальцем и перетаскивание мышью
         function onPointerDown(clientX) {
             isDragging = true;
             startX = clientX;
@@ -703,7 +839,8 @@
         function onPointerMove(clientX) {
             if (!isDragging) return;
             const deltaX = clientX - startX;
-            currentIndex = dragStartIndex - deltaX * 0.0045;
+            const sensitivity = window.innerWidth < 860 ? 0.006 : 0.0045;
+            currentIndex = dragStartIndex - deltaX * sensitivity;
             targetIndex = currentIndex;
         }
 
@@ -714,17 +851,17 @@
         }
 
         viewport.addEventListener('mousedown', (e) => onPointerDown(e.clientX));
-        window.addEventListener('mousemove', (e) => onPointerMove(e.clientX));
+        window.addEventListener('mousemove', (e) => onPointerMove(e.clientX), { passive: true });
         window.addEventListener('mouseup', onPointerUp);
 
         viewport.addEventListener('touchstart', (e) => onPointerDown(e.touches[0].clientX), { passive: true });
-        window.addEventListener('touchmove', (e) => onPointerMove(e.touches[0].clientX), { passive: true });
+        viewport.addEventListener('touchmove', (e) => onPointerMove(e.touches[0].clientX), { passive: true });
         window.addEventListener('touchend', onPointerUp);
 
-        // Клик по карточке: если боковая — прокрутить к ней, если центральная — включить/выключить звук
+        // Клик по карточке (переключение или звук)
         cards.forEach((card, i) => {
             card.addEventListener('click', () => {
-                if (Math.abs(currentIndex - dragStartIndex) > 0.08) return; // Игнорируем клик при перетаскивании
+                if (Math.abs(currentIndex - dragStartIndex) > 0.08) return;
 
                 const offset = getCircularOffset(i, currentIndex, totalCards);
                 if (Math.abs(offset) > 0.45) {
@@ -740,7 +877,6 @@
             });
         });
 
-        // Кнопки влево / вправо
         document.getElementById('prevWorkBtn').addEventListener('click', () => {
             targetIndex = Math.round(targetIndex - 1);
         });
