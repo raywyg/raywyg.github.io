@@ -26,7 +26,6 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            /* Запрещаем браузеру делать pull-to-refresh и горизонтальные свайпы страницы */
             overscroll-behavior-x: none;
             touch-action: pan-y;
         }
@@ -44,7 +43,7 @@
             transform: translateZ(0);
         }
 
-        /* --- ФОНОВЫЕ ПУЗЫРЬКИ НА ОРБИТАХ (Astra Physics) --- */
+        /* --- ФОНОВЫЕ ПУЗЫРЬКИ НА ОРБИТАХ (Astra + CC Smear Physics) --- */
         .ambient-bubbles-layer {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -64,7 +63,6 @@
             will-change: transform;
             transform: translate3d(0, 0, 0);
         }
-        /* Расположение фоновых пузырей по краям и вокруг контента */
         .eb-1 { width: 135px; height: 135px; top: 6%; left: 3%; opacity: 0.8; }
         .eb-2 { width: 90px; height: 90px; top: 10%; right: 4%; opacity: 0.7; }
         .eb-3 { width: 160px; height: 160px; bottom: 8%; left: -20px; opacity: 0.65; }
@@ -89,7 +87,7 @@
             z-index: 2;
         }
 
-        /* Карточка жестко зафиксирована (не улетает от мыши) */
+        /* Карточка жестко зафиксирована */
         .glass-card {
             grid-column: 1 / 2; grid-row: 1 / 2;
             align-self: center; justify-self: center;
@@ -162,7 +160,7 @@
         @keyframes float-lens-1 { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(60px, 10px, 0) scale(1.1); } }
         @keyframes float-lens-2 { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(-50px, -15px, 0) scale(1.15); } }
 
-        /* --- ВЕРХНИЙ БЛОК ДВУХ ПУЗЫРЕЙ СОЦСЕТЕЙ (Тоже реагируют на физику орбит) --- */
+        /* --- ВЕРХНИЙ БЛОК ДВУХ ПУЗЫРЕЙ СОЦСЕТЕЙ (CC Smear тянущийся эффект + мгновенный клик) --- */
         .top-bubbles-group {
             grid-column: 2 / 3;
             grid-row: 1 / 2;
@@ -171,6 +169,7 @@
             justify-content: center;
             gap: 35px;
             flex-wrap: wrap;
+            z-index: 6;
         }
 
         .bubble-wrapper-ig, .bubble-wrapper-tt {
@@ -187,8 +186,17 @@
             height: 220px;
             position: relative;
             cursor: pointer;
-            transition: transform 0.35s ease;
             user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Отдельный слой-оболочка для эффекта CC Smear, чтобы текст и иконка оставались четкими и кликабельными */
+        .smear-shell {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            will-change: transform;
+            z-index: 1;
         }
 
         .btn-text {
@@ -199,7 +207,7 @@
             font-weight: 500;
             letter-spacing: 0.5px;
             pointer-events: none;
-            transition: transform 0.3s ease;
+            transition: transform 0.25s ease;
         }
 
         .bg-logo-img {
@@ -213,11 +221,11 @@
             filter: blur(1.5px);
             opacity: 0.35; 
             transform: translate(-50%, -50%) scale(1);
-            transition: all 0.5s ease;
+            transition: all 0.4s ease;
             pointer-events: none;
         }
 
-        .soap-bubble::before {
+        .smear-shell::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -229,7 +237,6 @@
                 inset -10px 10px 20px rgba(255, 192, 203, 0.3),
                 0 15px 35px rgba(173, 216, 230, 0.15);
             animation: morph-bubble 8s ease-in-out infinite;
-            z-index: 1;
         }
 
         .bubble-wrapper-tt .soap-bubble {
@@ -237,18 +244,17 @@
             height: 200px;
         }
 
-        .bubble-wrapper-tt .soap-bubble::before {
+        .bubble-wrapper-tt .smear-shell::before {
             background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.1) 20%, rgba(200, 225, 250, 0.25) 60%, rgba(230, 190, 255, 0.2) 80%, rgba(173, 216, 230, 0.4) 100%);
             animation: morph-bubble-alt 10s ease-in-out infinite;
         }
 
-        .soap-bubble:hover { transform: scale(1.05) translateY(-5px); }
         .soap-bubble:hover .bg-logo-img {
             transform: translate(-50%, -50%) scale(1.15) rotate(-10deg);
             opacity: 0.6; 
             filter: blur(3px); 
         }
-        .soap-bubble:hover .btn-text { transform: scale(1.05); }
+        .soap-bubble:hover .btn-text { transform: scale(1.06); }
         .soap-bubble:active { transform: scale(0.95); }
 
         @keyframes morph-bubble {
@@ -260,7 +266,7 @@
             50% { border-radius: 70% 30% 40% 60% / 60% 40% 50% 40%; }
         }
 
-        /* --- APPLE LIQUID GLASS КОЛЕСО ВИДЕОРАБОТ (СНИЗУ) --- */
+        /* --- APPLE LIQUID GLASS КОЛЕСО РАБОТ (ВИДЕО + ФОТО, БЕЗ ОГРАНИЧЕНИЙ) --- */
         .works-wheel-section {
             grid-column: 1 / 3;
             grid-row: 2 / 3;
@@ -336,6 +342,7 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
 
         .liquid-card.is-active {
@@ -346,7 +353,7 @@
                 0 0 25px rgba(185, 220, 255, 0.6);
         }
 
-        .video-container {
+        .media-container {
             width: 100%;
             height: 285px;
             border-radius: 20px;
@@ -357,7 +364,7 @@
             transform: translateZ(0);
         }
 
-        .work-video {
+        .work-video, .work-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -365,22 +372,23 @@
             pointer-events: none;
         }
 
-        .sound-badge {
+        .open-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            padding: 4px 10px;
+            padding: 5px 11px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             font-size: 11px;
             font-weight: 500;
             color: #1a3a5f;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
         }
 
-        .liquid-card.is-active .sound-badge {
+        .liquid-card.is-active .open-badge {
             opacity: 1;
         }
 
@@ -432,13 +440,192 @@
             transform: scale(0.95);
         }
 
+        /* --- ВСТРОЕННЫЙ LIQUID GLASS МОДАЛЬНЫЙ ПЛЕЕР (С АВАТАРКОЙ И TELEGRAM СПРАВА) --- */
+        .liquid-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(230, 242, 255, 0.45);
+            backdrop-filter: blur(22px) saturate(160%);
+            -webkit-backdrop-filter: blur(22px) saturate(160%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .liquid-modal-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .liquid-player-box {
+            width: 100%;
+            max-width: 820px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.45) 100%);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 
+                0 30px 70px rgba(26, 58, 95, 0.18),
+                inset 0 2px 6px rgba(255, 255, 255, 1),
+                inset 0 -10px 25px rgba(185, 220, 255, 0.35);
+            border-radius: 32px;
+            padding: 22px;
+            display: grid;
+            grid-template-columns: 1.25fr 0.9fr;
+            gap: 24px;
+            position: relative;
+            transform: scale(0.92) translateY(15px);
+            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .liquid-modal-overlay.is-open .liquid-player-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.7);
+            color: #1a3a5f;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .modal-close-btn:hover {
+            background: #ffffff;
+            transform: scale(1.08);
+        }
+
+        .player-media-stage {
+            width: 100%;
+            height: 460px;
+            border-radius: 22px;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .modal-video, .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        /* Правая панель с твоей аватаркой и кнопкой Telegram */
+        .player-sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px 16px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .sidebar-avatar-wrap {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, #ffffff, rgba(173, 216, 230, 0.8));
+            box-shadow: 0 10px 25px rgba(26, 58, 95, 0.12);
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .sidebar-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .sidebar-author {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111;
+            letter-spacing: 0.4px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-role {
+            font-size: 13px;
+            font-weight: 400;
+            color: #556b82;
+            margin-bottom: 18px;
+        }
+
+        .sidebar-work-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a3a5f;
+            padding: 10px 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            margin-bottom: 22px;
+            width: 100%;
+            word-break: break-word;
+        }
+
+        .sidebar-tg-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #1a3a5f 0%, #2a5282 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            box-shadow: 0 10px 25px rgba(26, 58, 95, 0.25);
+            transition: all 0.25s ease;
+        }
+        .sidebar-tg-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 14px 30px rgba(26, 58, 95, 0.35);
+        }
+        .sidebar-tg-btn:active {
+            transform: scale(0.98);
+        }
+
         .copyright-mark {
             position: fixed; bottom: 20px; right: 30px; font-size: 11px;
             color: #888; font-weight: 300; letter-spacing: 1.5px;
             text-transform: uppercase; user-select: none; pointer-events: none; z-index: 100;
         }
 
-        /* --- ОПТИМИЗАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА (БЕЗ ЛАГОВ И БАГОВ МАСШТАБА) --- */
+        /* --- ОПТИМИЗАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА --- */
         @media (max-width: 860px) {
             .container {
                 grid-template-columns: 1fr;
@@ -470,23 +657,44 @@
             .bubble-wrapper-tt .soap-bubble { width: 145px; height: 145px; }
             
             /* Отключаем тяжелый SVG-фильтр на телефонах для 60 FPS */
-            .soap-bubble::before {
+            .smear-shell::before {
                 filter: none !important;
             }
             .bg-streams {
                 filter: blur(25px);
             }
-            /* Облегчаем стеклянные карточки для мобильного GPU */
             .liquid-card {
                 width: 220px;
                 height: 325px;
                 backdrop-filter: none;
                 -webkit-backdrop-filter: none;
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(235, 245, 255, 0.78) 100%);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(235, 245, 255, 0.82) 100%);
             }
             .wheel-viewport { height: 345px; perspective: 1000px; }
-            .video-container { height: 250px; }
+            .media-container { height: 250px; }
             .eb-7, .eb-8 { display: none; }
+
+            /* Адаптив модального плеера на телефоне */
+            .liquid-player-box {
+                grid-template-columns: 1fr;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 16px;
+                gap: 16px;
+            }
+            .player-media-stage {
+                height: 310px;
+            }
+            .sidebar-avatar-wrap {
+                width: 68px;
+                height: 68px;
+                margin-bottom: 8px;
+            }
+            .sidebar-work-title {
+                margin-bottom: 14px;
+                font-size: 14px;
+            }
+
             .copyright-mark { position: absolute; bottom: 18px; right: 0; left: 0; text-align: center; }
         }
     </style>
@@ -502,7 +710,7 @@
 
     <div class="bg-streams"></div>
 
-    <!-- ФОНОВЫЕ ПУЗЫРИ (Выбиваются с орбиты мышкой и возвращаются обратно) -->
+    <!-- ФОНОВЫЕ ПУЗЫРИ (Выбиваются с орбиты мышкой + тянутся эффектом CC Smear) -->
     <div class="ambient-bubbles-layer">
         <div class="edge-bubble eb-1" data-orbit-bubble data-radius="260" data-force="1.4"></div>
         <div class="edge-bubble eb-2" data-orbit-bubble data-radius="240" data-force="1.5"></div>
@@ -516,7 +724,7 @@
 
     <div class="container">
         
-        <!-- КАРТОЧКА ПРОФИЛЯ (СТРОГО СТАТИЧНА, НЕ ТРОГАЕМ ФИЗИКОЙ) -->
+        <!-- КАРТОЧКА ПРОФИЛЯ (СТРОГО СТАТИЧНА) -->
         <div class="glass-card">
             <div class="avatar-wrapper">
                 <div class="anti-copy-shield" oncontextmenu="return false;"></div>
@@ -530,94 +738,105 @@
                     <div class="mini-bubble mb-2"></div>
                 </div>
                 <br>
-                <a href="https://t.me/raywyg" target="_blank" class="tg-order-pill">Telegram / Заказать</a>
+                <a href="https://t.me/lakerek" target="_blank" class="tg-order-pill">Написать в Телеграм</a>
             </div>
         </div>
 
-        <!-- ДВА ПУЗЫРЬКА СОЦСЕТЕЙ (Тоже выбиваются с орбиты при резком движении мыши и плывут назад) -->
+        <!-- ДВА ПУЗЫРЬКА СОЦСЕТЕЙ (Не улетают далеко при клике, но тянутся эффектом CC Smear!) -->
         <div class="top-bubbles-group">
-            <div class="bubble-wrapper-ig" data-orbit-bubble data-radius="210" data-force="0.85">
+            <div class="bubble-wrapper-ig" data-smear-btn>
                 <a href="https://www.instagram.com/raywygxio/" target="_blank" class="soap-bubble">
+                    <div class="smear-shell"></div>
                     <img src="ig.png" alt="ig" class="bg-logo-img">
                     <span class="btn-text">my ig</span>
                 </a>
             </div>
 
-            <div class="bubble-wrapper-tt" data-orbit-bubble data-radius="210" data-force="0.95">
+            <div class="bubble-wrapper-tt" data-smear-btn>
                 <a href="https://www.tiktok.com/@raywyg?_r=1&_t=ZN-97g7VsXeEVC" target="_blank" class="soap-bubble">
+                    <div class="smear-shell"></div>
                     <img src="ttk.png" alt="tiktok" class="bg-logo-img">
                     <span class="btn-text">my tiktok</span>
                 </a>
             </div>
         </div>
 
-        <!-- КОЛЕСО ВИДЕОРАБОТ (СТРОГО НА МЕСТЕ, КРУТИТСЯ ПЛАВНО) -->
+        <!-- КОЛЕСО РАБОТ: ПОДДЕРЖИВАЕТ И ВИДЕО, И ФОТО (Количество карточек не ограничено!) -->
         <div class="works-wheel-section">
             <div class="wheel-header">
-                <span>Selected Works • Крути колесо или свайпай</span>
+                <span>Selected Works • Нажми на карточку, чтобы открыть плеер</span>
             </div>
 
             <div class="wheel-viewport" id="wheelViewport">
                 
-                <!-- ================= РАБОТА 1 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
+                <!-- ================= РАБОТА 1 (ВИДЕО) ================= -->
                 <div class="liquid-card">
-                    <div class="video-container">
+                    <div class="media-container">
                         <video class="work-video" src="video1.mp4" loop muted playsinline preload="metadata"></video>
-                        <div class="sound-badge">🔇 Клик — звук</div>
+                        <div class="open-badge">▶ Открыть плеер</div>
                     </div>
                     <div class="work-caption">
                         <span class="work-title">ВВЕДИТЕ НАЗВАНИЕ СВОЕЙ РАБОТЫ ЗДЕСЬ</span>
                     </div>
                 </div>
 
-                <!-- ================= РАБОТА 2 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
+                <!-- ================= РАБОТА 2 (ВИДЕО) ================= -->
                 <div class="liquid-card">
-                    <div class="video-container">
+                    <div class="media-container">
                         <video class="work-video" src="video2.mp4" loop muted playsinline preload="metadata"></video>
-                        <div class="sound-badge">🔇 Клик — звук</div>
+                        <div class="open-badge">▶ Открыть плеер</div>
                     </div>
                     <div class="work-caption">
                         <span class="work-title">ВВЕДИТЕ НАЗВАНИЕ СВОЕЙ РАБОТЫ ЗДЕСЬ</span>
                     </div>
                 </div>
 
-                <!-- ================= РАБОТА 3 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
+                <!-- ================= РАБОТА 3 (ВИДЕО) ================= -->
                 <div class="liquid-card">
-                    <div class="video-container">
+                    <div class="media-container">
                         <video class="work-video" src="video3.mp4" loop muted playsinline preload="metadata"></video>
-                        <div class="sound-badge">🔇 Клик — звук</div>
+                        <div class="open-badge">▶ Открыть плеер</div>
                     </div>
                     <div class="work-caption">
                         <span class="work-title">ВВЕДИТЕ НАЗВАНИЕ СВОЕЙ РАБОТЫ ЗДЕСЬ</span>
                     </div>
                 </div>
 
-                <!-- ================= РАБОТА 4 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
+                <!-- ================= РАБОТА 4 (ВИДЕО) ================= -->
                 <div class="liquid-card">
-                    <div class="video-container">
+                    <div class="media-container">
                         <video class="work-video" src="video4.mp4" loop muted playsinline preload="metadata"></video>
-                        <div class="sound-badge">🔇 Клик — звук</div>
+                        <div class="open-badge">▶ Открыть плеер</div>
                     </div>
                     <div class="work-caption">
                         <span class="work-title">ВВЕДИТЕ НАЗВАНИЕ СВОЕЙ РАБОТЫ ЗДЕСЬ</span>
                     </div>
                 </div>
 
-                <!-- ================= РАБОТА 5 ================= -->
-                <!-- ВСТАВЬ ИМЯ СВОЕГО ВИДЕОФАЙЛА В src="" НИЖЕ -->
+                <!-- ================= РАБОТА 5 (ВИДЕО) ================= -->
                 <div class="liquid-card">
-                    <div class="video-container">
+                    <div class="media-container">
                         <video class="work-video" src="video5.mp4" loop muted playsinline preload="metadata"></video>
-                        <div class="sound-badge">🔇 Клик — звук</div>
+                        <div class="open-badge">▶ Открыть плеер</div>
                     </div>
                     <div class="work-caption">
                         <span class="work-title">ВВЕДИТЕ НАЗВАНИЕ СВОЕЙ РАБОТЫ ЗДЕСЬ</span>
                     </div>
                 </div>
+
+                <!-- ================= РАБОТА 6 (ФОТОГРАФИЯ / ДИЗАЙН) ================= -->
+                <!-- Чтобы добавить фото, просто используй тег <img class="work-image" src="твоя_фотка.jpg"> вместо <video> -->
+                <div class="liquid-card">
+                    <div class="media-container">
+                        <img class="work-image" src="photo1.jpg" alt="Work">
+                        <div class="open-badge">🔍 Открыть работу</div>
+                    </div>
+                    <div class="work-caption">
+                        <span class="work-title">ВВЕДИТЕ НАЗВАНИЕ СВОЕЙ РАБОТЫ ЗДЕСЬ</span>
+                    </div>
+                </div>
+
+                <!-- ТЫ МОЖЕШЬ КОПИРОВАТЬ БЛОК <div class="liquid-card">...</div> СКОЛЬКО УГОДНО РАЗ (10, 20, 30 работ) -->
 
             </div>
 
@@ -629,45 +848,79 @@
 
     </div>
 
+    <!-- ВСТРОЕННЫЙ LIQUID GLASS ПЛЕЕР (ОТКРЫВАЕТСЯ ПО КЛИКУ НА КАРТОЧКУ) -->
+    <div class="liquid-modal-overlay" id="liquidModal">
+        <div class="liquid-player-box" id="liquidPlayerBox">
+            <button class="modal-close-btn" id="closeModalBtn" aria-label="Закрыть">×</button>
+            
+            <!-- Левая часть: Видео или Фото -->
+            <div class="player-media-stage">
+                <video class="modal-video" id="modalVideoPlayer" controls playsinline loop></video>
+                <img class="modal-image" id="modalImageView" alt="Full Work">
+            </div>
+
+            <!-- Правая часть: Твоя аватарка и кнопка Написать в Телеграм -->
+            <div class="player-sidebar">
+                <div class="sidebar-avatar-wrap">
+                    <div class="anti-copy-shield" oncontextmenu="return false;"></div>
+                    <img src="avatar.jpg" alt="Raywyg" class="sidebar-avatar" draggable="false">
+                </div>
+                <div class="sidebar-author">@raywyg</div>
+                <div class="sidebar-role">Motion & 3D Designer</div>
+                <div class="sidebar-work-title" id="modalWorkTitle">Название проекта</div>
+                
+                <a href="https://t.me/lakerek" target="_blank" class="sidebar-tg-btn">
+                    <span>Написать в Телеграм</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="copyright-mark">
         &copy; 2026 RAYWYG. All rights reserved.
     </div>
 
     <script>
-        // Блокируем жест масштабирования (pinch-to-zoom и двойной тап) на мобильных браузерах (iOS Safari и др.)
+        // Блокируем жесты масштабирования на мобильных браузерах
         document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
         document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
         document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
-        const isMobileDevice = window.matchMedia('(max-width: 860px)').matches;
-
         // =========================================================================
-        // 1. ФИЗИКА ВЫБИВАНИЯ С ОРБИТЫ И ВОЗВРАТА (В СТИЛЕ GPT-6 ASTRA)
+        // 1. ФИЗИКА ФОНОВЫХ ПУЗЫРЕЙ + ЭФФЕКТ CC SMEAR ДЛЯ КНОПОК СОЦСЕТЕЙ
         // =========================================================================
         const orbitNodes = Array.from(document.querySelectorAll('[data-orbit-bubble]')).map(el => ({
             el,
-            x: 0,          // Текущее смещение X от родной орбиты
-            y: 0,          // Текущее смещение Y от родной орбиты
-            vx: 0,         // Скорость X
-            vy: 0,         // Скорость Y
-            baseX: 0,      // Координата центра орбиты на экране
-            baseY: 0,
+            x: 0, y: 0, vx: 0, vy: 0,
+            baseX: 0, baseY: 0,
             radius: parseFloat(el.dataset.radius) || 240,
             force: parseFloat(el.dataset.force) || 1.2
         }));
 
-        // Вычисляем родные позиции (орбиты) каждого пузыря
-        function updateBaseOrbits() {
+        // Кнопки IG и TikTok: центр почти не смещается (чтобы клик работал с 1 раза!), но оболочка тянется как CC Smear
+        const smearButtons = Array.from(document.querySelectorAll('[data-smear-btn]')).map(el => ({
+            el,
+            shell: el.querySelector('.smear-shell'),
+            x: 0, y: 0, vx: 0, vy: 0,
+            baseX: 0, baseY: 0
+        }));
+
+        function updateBasePositions() {
             orbitNodes.forEach(b => {
                 const rect = b.el.getBoundingClientRect();
                 b.baseX = (rect.left + rect.width / 2) - b.x;
                 b.baseY = (rect.top + rect.height / 2) - b.y;
             });
+            smearButtons.forEach(s => {
+                const rect = s.el.getBoundingClientRect();
+                s.baseX = (rect.left + rect.width / 2) - s.x;
+                s.baseY = (rect.top + rect.height / 2) - s.y;
+            });
         }
 
-        window.addEventListener('load', updateBaseOrbits);
-        window.addEventListener('resize', updateBaseOrbits);
-        setTimeout(updateBaseOrbits, 100);
+        window.addEventListener('load', updateBasePositions);
+        window.addEventListener('resize', updateBasePositions);
+        setTimeout(updateBasePositions, 120);
 
         const pointer = { x: -9999, y: -9999, vx: 0, vy: 0, lastX: -9999, lastY: -9999, active: false };
         let pointerIdleTimer;
@@ -698,55 +951,99 @@
             }
         }, { passive: true });
 
-        function stepOrbitPhysics() {
+        function stepPhysics() {
             const pointerSpeed = Math.hypot(pointer.vx, pointer.vy);
 
+            // А) Фоновые пузыри (улетают с орбиты + растягиваются вдоль вектора скорости)
             orbitNodes.forEach(b => {
-                // Текущая позиция пузыря в пространстве
                 const currentScreenX = b.baseX + b.x;
                 const currentScreenY = b.baseY + b.y;
-
                 const dx = currentScreenX - pointer.x;
                 const dy = currentScreenY - pointer.y;
                 const dist = Math.hypot(dx, dy);
 
-                // Если курсор рядом — выбиваем пузырь с его орбиты
                 if (dist < b.radius && dist > 0.001) {
                     const factor = Math.pow(1 - dist / b.radius, 1.5);
                     const nx = dx / dist;
                     const ny = dy / dist;
-
-                    // Чем быстрее двигаешь мышкой, тем сильнее разлетаются пузыри (можно расчистить зону)
                     const impulse = (pointer.active ? (2.2 + Math.min(pointerSpeed * 0.28, 12)) : 0.6) * factor * b.force;
                     
                     b.vx += nx * impulse + (pointer.vx * 0.06 * factor * b.force);
                     b.vy += ny * impulse + (pointer.vy * 0.06 * factor * b.force);
                 }
 
-                // Мягкая гравитация орбиты: когда мышь не трогает пузырь, он плавно плывет обратно на (0, 0)
-                const springStiffness = 0.018;
-                b.vx += -b.x * springStiffness;
-                b.vy += -b.y * springStiffness;
-
-                // Сопротивление среды (жидкое затухание)
-                b.vx *= 0.91;
-                b.vy *= 0.91;
-
+                // Гравитация возврата на орбиту
+                b.vx += -b.x * 0.02;
+                b.vy += -b.y * 0.02;
+                b.vx *= 0.90;
+                b.vy *= 0.90;
                 b.x += b.vx;
                 b.y += b.vy;
 
-                b.el.style.transform = `translate3d(${b.x.toFixed(2)}px, ${b.y.toFixed(2)}px, 0)`;
+                // Эффект CC Smear (растяжение по направлению движения)
+                const speed = Math.hypot(b.vx, b.vy);
+                const stretch = Math.min(speed * 0.028, 0.38);
+                const angle = Math.atan2(b.vy, b.vx);
+                // Матрица направленного растяжения без поломки ориентации
+                const sx = 1 + stretch * Math.abs(Math.cos(angle));
+                const sy = 1 + stretch * Math.abs(Math.sin(angle));
+                const skewX = (b.vx * b.vy) * 0.08;
+
+                b.el.style.transform = `translate3d(${b.x.toFixed(2)}px, ${b.y.toFixed(2)}px, 0) scale(${sx.toFixed(3)}, ${sy.toFixed(3)}) skewX(${Math.max(-14, Math.min(14, skewX)).toFixed(2)}deg)`;
+            });
+
+            // Б) Кнопки IG и TikTok: мягкий эффект CC Smear (тянутся за курсором, но остаются под пальцем для клика!)
+            smearButtons.forEach(s => {
+                const dx = pointer.x - s.baseX;
+                const dy = pointer.y - s.baseY;
+                const dist = Math.hypot(dx, dy);
+                const influenceRadius = 185;
+
+                if (dist < influenceRadius) {
+                    const pull = (1 - dist / influenceRadius);
+                    // Слегка тянется за курсором и импульсом мыши, как жидкая капля
+                    s.vx += (dx * 0.035 * pull) + (pointer.vx * 0.14 * pull);
+                    s.vy += (dy * 0.035 * pull) + (pointer.vy * 0.14 * pull);
+                }
+
+                // Упругая пружина возвращает форму обратно
+                s.vx += -s.x * 0.14;
+                s.vy += -s.y * 0.14;
+                s.vx *= 0.80;
+                s.vy *= 0.80;
+                s.x += s.vx;
+                s.y += s.vy;
+
+                // Жесткий лимит смещения (максимум 22px), чтобы кнопка никогда не убегала от клика
+                const maxOffset = 22;
+                const curDist = Math.hypot(s.x, s.y);
+                if (curDist > maxOffset) {
+                    s.x = (s.x / curDist) * maxOffset;
+                    s.y = (s.y / curDist) * maxOffset;
+                }
+
+                // Вычисляем деформацию CC Smear для мыльной оболочки (.smear-shell)
+                const stretchX = 1 + Math.min(Math.abs(s.x) * 0.012 + Math.abs(s.vx) * 0.018, 0.34);
+                const stretchY = 1 + Math.min(Math.abs(s.y) * 0.012 + Math.abs(s.vy) * 0.018, 0.34);
+                const skewX = Math.max(-18, Math.min(18, (s.x * 0.45 + s.vx * 0.8)));
+                const skewY = Math.max(-18, Math.min(18, (s.y * 0.45 + s.vy * 0.8)));
+
+                // Сам блок сдвигается совсем чуть-чуть, а оболочка сильно тянется
+                s.el.style.transform = `translate3d(${(s.x * 0.45).toFixed(2)}px, ${(s.y * 0.45).toFixed(2)}px, 0)`;
+                if (s.shell) {
+                    s.shell.style.transform = `translate3d(${(s.x * 0.7).toFixed(2)}px, ${(s.y * 0.7).toFixed(2)}px, 0) scale(${stretchX.toFixed(3)}, ${stretchY.toFixed(3)}) skew(${skewX.toFixed(2)}deg, ${skewY.toFixed(2)}deg)`;
+                }
             });
 
             pointer.vx *= 0.8;
             pointer.vy *= 0.8;
 
-            requestAnimationFrame(stepOrbitPhysics);
+            requestAnimationFrame(stepPhysics);
         }
-        stepOrbitPhysics();
+        stepPhysics();
 
         // =========================================================================
-        // 2. ОПТИМИЗИРОВАННОЕ APPLE LIQUID GLASS 3D-КОЛЕСО (60 FPS НА ТЕЛЕФОНЕ И ПК)
+        // 2. КОЛЕСО РАБОТ (БЕЗ ОГРАНИЧЕНИЙ ПО КОЛИЧЕСТВУ + ПОДДЕРЖКА ФОТО И ВИДЕО)
         // =========================================================================
         const viewport = document.getElementById('wheelViewport');
         const cards = Array.from(document.querySelectorAll('.liquid-card'));
@@ -757,6 +1054,7 @@
         let isDragging = false;
         let startX = 0;
         let dragStartIndex = 0;
+        let pointerMovedDistance = 0;
 
         function getCircularOffset(index, center, total) {
             let diff = (index - center) % total;
@@ -777,27 +1075,34 @@
                 const offset = getCircularOffset(i, currentIndex, totalCards);
                 const absOffset = Math.abs(offset);
 
-                const translateX = offset * spacing;
-                const translateZ = -absOffset * (mobileView ? 95 : 130);
-                const rotateY = offset * (mobileView ? -18 : -24);
-                const scale = Math.max(0.68, 1 - absOffset * 0.14);
-                const opacity = Math.max(0.18, 1 - absOffset * 0.36);
+                // Если в колесе много работ (например 10-20), прячем те, что сзади (дальше 2.6 позиций от центра)
+                if (absOffset > 2.6) {
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    card.style.transform = 'translate3d(0, 0, -400px) scale(0.5)';
+                } else {
+                    const translateX = offset * spacing;
+                    const translateZ = -absOffset * (mobileView ? 95 : 130);
+                    const rotateY = offset * (mobileView ? -18 : -24);
+                    const scale = Math.max(0.68, 1 - absOffset * 0.14);
+                    const opacity = Math.max(0.15, 1 - absOffset * 0.36);
 
-                card.style.transform = `translate3d(${translateX.toFixed(1)}px, 0, ${translateZ.toFixed(1)}px) rotateY(${rotateY.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
-                card.style.zIndex = Math.round(100 - absOffset * 20);
-                card.style.opacity = opacity.toFixed(2);
+                    card.style.pointerEvents = 'auto';
+                    card.style.transform = `translate3d(${translateX.toFixed(1)}px, 0, ${translateZ.toFixed(1)}px) rotateY(${rotateY.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
+                    card.style.zIndex = Math.round(100 - absOffset * 20);
+                    card.style.opacity = opacity.toFixed(2);
 
-                // На ПК оставляем кинематографичный блюр боковых карточек, на мобилках отключаем ради плавности
-                if (!mobileView) {
-                    const blur = Math.max(0, (absOffset - 0.3) * 3);
-                    card.style.filter = blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none';
+                    if (!mobileView) {
+                        const blur = Math.max(0, (absOffset - 0.3) * 3);
+                        card.style.filter = blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none';
+                    }
                 }
 
                 const video = card.querySelector('video');
                 if (absOffset < 0.45) {
                     if (!card.classList.contains('is-active')) {
                         card.classList.add('is-active');
-                        if (video && video.paused) {
+                        if (video && video.paused && !modalOverlay.classList.contains('is-open')) {
                             video.play().catch(() => {});
                         }
                     }
@@ -806,7 +1111,6 @@
                         card.classList.remove('is-active');
                         if (video && !video.paused) {
                             video.pause();
-                            video.muted = true;
                         }
                     }
                 }
@@ -814,6 +1118,69 @@
 
             requestAnimationFrame(renderWheel);
         }
+
+        // =========================================================================
+        // 3. МОДАЛЬНЫЙ LIQUID GLASS ПЛЕЕР ПРИ НАЖАТИИ НА РАБОТУ
+        // =========================================================================
+        const modalOverlay = document.getElementById('liquidModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalVideoPlayer = document.getElementById('modalVideoPlayer');
+        const modalImageView = document.getElementById('modalImageView');
+        const modalWorkTitle = document.getElementById('modalWorkTitle');
+
+        function openWorkModal(card) {
+            const titleEl = card.querySelector('.work-title');
+            const videoEl = card.querySelector('video.work-video');
+            const imgEl = card.querySelector('img.work-image');
+
+            modalWorkTitle.textContent = titleEl ? titleEl.textContent : 'Project';
+
+            // Останавливаем фоновое превью в колесе
+            cards.forEach(c => {
+                const v = c.querySelector('video');
+                if (v) v.pause();
+            });
+
+            if (videoEl) {
+                modalImageView.style.display = 'none';
+                modalVideoPlayer.style.display = 'block';
+                modalVideoPlayer.src = videoEl.getAttribute('src');
+                modalVideoPlayer.muted = false;
+                modalVideoPlayer.currentTime = 0;
+                modalVideoPlayer.play().catch(() => {});
+            } else if (imgEl) {
+                modalVideoPlayer.pause();
+                modalVideoPlayer.style.display = 'none';
+                modalImageView.style.display = 'block';
+                modalImageView.src = imgEl.getAttribute('src');
+            }
+
+            modalOverlay.classList.add('is-open');
+        }
+
+        function closeWorkModal() {
+            modalOverlay.classList.remove('is-open');
+            modalVideoPlayer.pause();
+            modalVideoPlayer.removeAttribute('src');
+
+            // Возобновляем превью активной карточки
+            const activeCard = document.querySelector('.liquid-card.is-active');
+            if (activeCard) {
+                const v = activeCard.querySelector('video');
+                if (v) v.play().catch(() => {});
+            }
+        }
+
+        closeModalBtn.addEventListener('click', closeWorkModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeWorkModal();
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('is-open')) {
+                closeWorkModal();
+            }
+        });
+
         renderWheel();
 
         // Скролл колесиком мыши / тачпадом
@@ -834,11 +1201,13 @@
             isDragging = true;
             startX = clientX;
             dragStartIndex = currentIndex;
+            pointerMovedDistance = 0;
         }
 
         function onPointerMove(clientX) {
             if (!isDragging) return;
             const deltaX = clientX - startX;
+            pointerMovedDistance = Math.abs(deltaX);
             const sensitivity = window.innerWidth < 860 ? 0.006 : 0.0045;
             currentIndex = dragStartIndex - deltaX * sensitivity;
             targetIndex = currentIndex;
@@ -858,21 +1227,16 @@
         viewport.addEventListener('touchmove', (e) => onPointerMove(e.touches[0].clientX), { passive: true });
         window.addEventListener('touchend', onPointerUp);
 
-        // Клик по карточке (переключение или звук)
+        // Клик по карточке: если сбоку — крутит к ней, если по центральной — открывает Liquid Glass плеер!
         cards.forEach((card, i) => {
             card.addEventListener('click', () => {
-                if (Math.abs(currentIndex - dragStartIndex) > 0.08) return;
+                if (pointerMovedDistance > 10) return; // Если это был свайп, а не клик — не открываем плеер
 
                 const offset = getCircularOffset(i, currentIndex, totalCards);
                 if (Math.abs(offset) > 0.45) {
                     targetIndex = Math.round(currentIndex + offset);
                 } else {
-                    const video = card.querySelector('video');
-                    const badge = card.querySelector('.sound-badge');
-                    if (video) {
-                        video.muted = !video.muted;
-                        badge.textContent = video.muted ? '🔇 Клик — звук' : '🔊 Звук вкл';
-                    }
+                    openWorkModal(card);
                 }
             });
         });
